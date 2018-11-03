@@ -1,0 +1,38 @@
+{
+  "name": "electron-angular-starter",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prebuild": "rimraf .dist",
+    "build": "run-p build:front build:server",
+    "build:front": "cd angular && npm run build",
+    "build:server": "tsc -p .",
+    "build:server:w": "tsc -p . -w",
+    "serve:front": "cd angular && npm start",
+    "run:electron": "wait-on http-get://localhost:4200/ && cross-env NODE_ENV=development electron .",
+    "start": "run-p serve:front build:server:w run:electron",
+    "prepackage": "rimraf dist && npm run build",
+    "package": "electron-builder -mwl"
+  },
+  "build": {
+    "appId": "com.ovrmrw.app"
+  },
+  "keywords": [],
+  "author": "Tomohiro Noguchi <t.ngc.0403@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^10.12.2",
+    "cross-env": "^5.2.0",
+    "electron": "^3.0.7",
+    "electron-builder": "^20.31.2",
+    "electron-reload": "^1.2.5",
+    "npm-run-all": "^4.1.3",
+    "rimraf": "^2.6.2",
+    "ts-node": "^7.0.1",
+    "tslint": "^5.11.0",
+    "typescript": "^3.1.6",
+    "wait-on": "^3.1.0"
+  },
+  "dependencies": {}
+}
