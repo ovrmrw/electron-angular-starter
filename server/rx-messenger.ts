@@ -5,14 +5,14 @@ import { MESSENGER } from './const';
 import { MessageBase, ErrorObject } from './types';
 
 export type MessengerSendProtocol = string;
-export type MessengerRecieveProtocol = string;
+export type MessengerReplyProtocol = string;
 
 type Message = MessageBase<MessengerSendProtocol>;
 
 export class RxMessenger {
   private subject$: Subject<Message> | null;
   private cachedSender: WebContents;
-  succeededResult$: Subject<MessengerRecieveProtocol> = new Subject();
+  succeededResult$: Subject<MessengerReplyProtocol> = new Subject();
   failedResult$: Subject<ErrorObject> = new Subject();
 
   constructor() {

@@ -3,14 +3,14 @@ import { ElectronService } from './electron.service';
 import { Observable, Subject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
-import { MessengerSendProtocol, MessengerRecieveProtocol } from '../../../server/rx-messenger';
+import { MessengerSendProtocol, MessengerReplyProtocol } from '../../../server/rx-messenger';
 import { MESSENGER } from '../../../server/const';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MessengerService {
-  private reciever$ = new Subject<MessengerRecieveProtocol>();
+  private reciever$ = new Subject<MessengerReplyProtocol>();
 
   constructor(private electron: ElectronService, private ngZone: NgZone) {
     this.setEventListeners();
@@ -20,7 +20,7 @@ export class MessengerService {
     this.electron.ipcRenderer.on(MESSENGER.REPLY, (_, arg) => this.eventCallback(arg));
   }
 
-  eventCallback(arg: MessengerRecieveProtocol): void {
+  eventCallback(arg: MessengerReplyProtocol): void {
     this.ngZone.run(() => this.reciever$.next(arg));
   }
 
@@ -28,7 +28,7 @@ export class MessengerService {
     this.electron.ipcRenderer.send(MESSENGER.SEND, message);
   }
 
-  get result$(): Observable<MessengerRecieveProtocol> {
+  get result$(): Observable<MessengerReplyProtocol> {
     return this.reciever$.pipe(tap(console.log));
   }
 }

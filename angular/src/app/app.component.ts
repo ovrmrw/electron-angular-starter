@@ -3,7 +3,7 @@ import { ElectronService } from './electron.service';
 import { MessengerService } from './messenger.service';
 import { Observable } from 'rxjs';
 
-import { MessengerRecieveProtocol } from '../../../server/rx-messenger';
+import { MessengerReplyProtocol } from '../../../server/rx-messenger';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +12,7 @@ import { MessengerRecieveProtocol } from '../../../server/rx-messenger';
 })
 export class AppComponent implements OnInit {
   title = 'angular';
-  result$: Observable<MessengerRecieveProtocol>;
+  result$: Observable<MessengerReplyProtocol>;
   count = 0;
 
   constructor(private electron: ElectronService, private messenger: MessengerService) {}
