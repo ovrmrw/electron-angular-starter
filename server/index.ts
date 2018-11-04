@@ -1,7 +1,6 @@
 import { app, BrowserWindow, screen } from 'electron';
 import * as path from 'path';
 import { isDevelopment } from './helpers';
-import './register';
 
 const prodBrowserWindowConfig = { width: 800, height: 600 };
 
@@ -72,3 +71,5 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
+app.on('ready', () => require('./register'));

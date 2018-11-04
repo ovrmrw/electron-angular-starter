@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { map, delay, tap } from 'rxjs/operators';
 import { MESSENGER } from './const';
 import { MessageBase, ErrorObject } from './types';
-import { electronAsync } from './helpers';
+import { electronModules } from './helpers';
 
 export type MessengerSendProtocol = string;
 export type MessengerReplyProtocol = string;
@@ -21,10 +21,8 @@ export class RxMessenger {
   }
 
   setEventListeners(): void {
-    electronAsync().then(electron => {
-      const ipcMain = electron.ipcMain;
-      ipcMain.on(MESSENGER.SEND, (event, arg) => this.sendEventCallback({ event, arg }));
-    });
+    const ipcMain = electronModules().ipcMain;
+    ipcMain.on(MESSENGER.SEND, (event, arg) => this.sendEventCallback({ event, arg }));
   }
 
   sendEventCallback(message: Message): void {

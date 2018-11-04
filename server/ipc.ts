@@ -1,16 +1,22 @@
 import { IpcMessageEvent } from 'electron';
-import { electronAsync } from './helpers';
+import { electronModules } from './helpers';
 
-electronAsync().then(electron => {
-  const ipcMain = electron.ipcMain;
+export class IpcExample {
+  constructor() {
+    this.setEventListeners();
+  }
 
-  ipcMain.on('asynchronous-message', (event: IpcMessageEvent, arg) => {
-    console.log(arg); // prints "ping"
-    event.sender.send('asynchronous-reply', 'pong - async');
-  });
+  setEventListeners(): void {
+    const ipcMain = electronModules().ipcMain;
 
-  ipcMain.on('synchronous-message', (event: IpcMessageEvent, arg) => {
-    console.log(arg); // prints "ping"
-    event.returnValue = 'pong - sync';
-  });
-});
+    ipcMain.on('asynchronous-message', (event: IpcMessageEvent, arg) => {
+      console.log(arg); // prints "ping"
+      event.sender.send('asynchronous-reply', 'pong - async');
+    });
+
+    ipcMain.on('synchronous-message', (event: IpcMessageEvent, arg) => {
+      console.log(arg); // prints "ping"
+      event.returnValue = 'pong - sync';
+    });
+  }
+}

@@ -22,12 +22,15 @@ export function singleton<T>(name: string, createInstance: () => T): T {
   return global._singletons[name];
 }
 
-export async function electronAsync(): Promise<ElectronModules> {
+export function electronModules(): ElectronModules {
   if (typeof global === 'undefined') {
     return void 0 as any;
   }
   if (!global._electron) {
-    await new Promise(resolve => app.once('ready', resolve));
+    // Must be called after ready event of "app" module.
+    if (!app.isReady) {
+      throw new Error('"app" module is not ready!');
+    }
     global._electron = {
       app,
       screen,
