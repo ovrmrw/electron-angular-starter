@@ -13,8 +13,8 @@ type Message = MessageBase<MessengerSendProtocol>;
 export class RxMessenger {
   private subject$: Subject<Message> | null;
   private cachedSender: WebContents;
-  succeededResult$: Subject<MessengerReplyProtocol> = new Subject();
-  failedResult$: Subject<ErrorObject> = new Subject();
+  successResult$: Subject<MessengerReplyProtocol> = new Subject();
+  failureResult$: Subject<ErrorObject> = new Subject();
 
   constructor() {
     this.setEventListeners();
@@ -42,7 +42,7 @@ export class RxMessenger {
       .subscribe({
         next: ({ event, value }) => {
           event.sender.send(MESSENGER.REPLY, value);
-          this.succeededResult$.next(value);
+          this.successResult$.next(value);
         },
         error: err => {
           console.error(err);
@@ -50,7 +50,7 @@ export class RxMessenger {
           if (this.cachedSender) {
             this.cachedSender.send(MESSENGER.REPLY, value);
           }
-          this.failedResult$.next(value);
+          this.failureResult$.next(value);
           this.subject$ = null;
         }
       });

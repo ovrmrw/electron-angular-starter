@@ -1,16 +1,22 @@
 import { ExtendedGlobal } from './types';
 declare var global: ExtendedGlobal;
 
-export function singleton<T>(name: string, createInstance: () => T): T | undefined {
+export function isDevelopment(): boolean {
+  return process.env.NODE_ENV === 'development';
+}
+
+export function singleton<T>(name: string, createInstance: () => T): T {
   if (typeof global === 'undefined') {
-    return;
+    return void 0 as any;
   }
-  if (!global.singletons) {
-    global.singletons = {};
+  if (!global._singletons) {
+    global._singletons = {};
   }
-  if (!global.singletons[name]) {
-    global.singletons[name] = createInstance();
-    console.log(`created singleton instance [${name}]:`, global.singletons[name]);
+  if (!global._singletons[name]) {
+    global._singletons[name] = createInstance();
+    if (isDevelopment()) {
+      console.log(`created singleton instance [${name}]:`, global._singletons[name]);
+    }
   }
-  return global.singletons[name];
+  return global._singletons[name];
 }

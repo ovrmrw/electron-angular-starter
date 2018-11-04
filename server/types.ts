@@ -1,6 +1,6 @@
 import { IpcMessageEvent } from 'electron';
 
-export type ExtendedGlobal = NodeJS.Global & { singletons?: Record<string, any> };
+export type ExtendedGlobal = NodeJS.Global & { _singletons?: Record<string, any> };
 
 export interface MessageBase<T> {
   event: IpcMessageEvent;

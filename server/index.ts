@@ -1,21 +1,19 @@
 import { app, BrowserWindow, screen } from 'electron';
 import * as path from 'path';
-import { ExtendedGlobal } from './types';
-declare var global: ExtendedGlobal;
-
-global.singletons = {};
+import { isDevelopment } from './helpers';
+import './ipc';
+import './rx-messenger';
 
 const prodBrowserWindowConfig = { width: 800, height: 600 };
 
-const isDevelopment = process.env.NODE_ENV === 'development';
-if (isDevelopment) {
+if (isDevelopment()) {
   require('electron-reload')(__dirname, {
     electron: path.join(process.cwd(), 'node_modules', '.bin', 'electron'),
     hardResetMethod: 'exit'
   });
 }
 
-console.log({ isDevelopment, __dirname });
+console.log({ isDevelopment: isDevelopment(), __dirname });
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -23,7 +21,7 @@ let win: BrowserWindow | null;
 
 function createWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
-  const browserWindowConfig = isDevelopment
+  const browserWindowConfig = isDevelopment()
     ? {
         x: 0,
         y: 0,
@@ -34,7 +32,7 @@ function createWindow() {
   // Create the browser window.
   win = new BrowserWindow(browserWindowConfig);
 
-  if (isDevelopment) {
+  if (isDevelopment()) {
     win.webContents.openDevTools();
   }
 
@@ -47,7 +45,7 @@ function createWindow() {
   });
 
   // and load the index.html of the app.
-  if (isDevelopment) {
+  if (isDevelopment()) {
     win.loadURL('http://localhost:4200/');
   } else {
     win.loadFile(path.join(__dirname, '../front', 'index.html'));
@@ -75,6 +73,3 @@ app.on('activate', () => {
     createWindow();
   }
 });
-
-import './ipc';
-import './rx-messenger';
