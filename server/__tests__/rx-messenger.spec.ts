@@ -1,8 +1,7 @@
 import { RxMessenger } from '../rx-messenger';
-import { ExtendedGlobal } from '../types';
 import { take } from 'rxjs/operators';
 import { MESSENGER } from '../const';
-declare var global: ExtendedGlobal;
+import { mockElectronModules, removeElectronModules } from './test-helpers';
 
 const mockEvent = {
   sender: {
@@ -14,12 +13,12 @@ describe('RxMessenger', () => {
   let rxMessenger: RxMessenger;
 
   beforeEach(() => {
-    global._electron = {
-      ipcMain: {
-        on: () => {}
-      }
-    } as any;
+    mockElectronModules();
     rxMessenger = new RxMessenger();
+  });
+
+  afterEach(() => {
+    removeElectronModules();
   });
 
   it('should be created.', () => {
