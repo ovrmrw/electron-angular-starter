@@ -2,8 +2,8 @@ import { ipcMain, WebContents } from 'electron';
 import { Subject } from 'rxjs';
 import { map, delay, tap } from 'rxjs/operators';
 import { MESSENGER } from './const';
-import { MessageBase, ErrorObject, ExtendedGlobal } from './types';
-declare var global: ExtendedGlobal;
+import { MessageBase, ErrorObject } from './types';
+import { singleton } from './helpers';
 
 export type MessengerSendProtocol = string;
 export type MessengerReplyProtocol = string;
@@ -58,6 +58,4 @@ export class RxMessenger {
   }
 }
 
-if (typeof global !== 'undefined' && global.singletons && !global.singletons.rxMessenger) {
-  global.singletons.rxMessenger = new RxMessenger();
-}
+singleton('rxMessenger', () => new RxMessenger());
