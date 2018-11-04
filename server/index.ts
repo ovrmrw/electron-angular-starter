@@ -1,5 +1,9 @@
 import { app, BrowserWindow, screen } from 'electron';
 import * as path from 'path';
+import { ExtendedGlobal } from './types';
+declare var global: ExtendedGlobal;
+
+global.singletons = {};
 
 const prodBrowserWindowConfig = { width: 800, height: 600 };
 
