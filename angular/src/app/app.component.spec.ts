@@ -1,16 +1,15 @@
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
+import { ElectronService } from './electron.service';
+import { MessengerService } from './messenger.service';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ],
-      declarations: [
-        AppComponent
-      ],
+      imports: [RouterTestingModule],
+      declarations: [AppComponent],
+      providers: [{ provide: ElectronService, useValue: {} }, { provide: MessengerService, useValue: {} }]
     }).compileComponents();
   }));
 

@@ -8,6 +8,11 @@
 
 <div>
   <button (click)="sendMessage()">SendMessage</button>
+  <button (click)="sendMessageRx()">SendMessageRx</button>
+</div>
+
+<div>
+  <div>result: {{ result$ | async | json }}</div>
 </div>
 
 <router-outlet></router-outlet>

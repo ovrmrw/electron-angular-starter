@@ -73,3 +73,4 @@ app.on('activate', () => {
 });
 
 import './ipc';
+import './rx-messenger';
