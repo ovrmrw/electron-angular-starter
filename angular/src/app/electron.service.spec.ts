@@ -26,14 +26,14 @@ describe('ElectronService', () => {
   });
 
   describe('#isElectron', () => {
-    it('return true when window has process.type', () => {
+    it('return true when window.process.type exists,', () => {
       window.process = {
         type: {}
       };
       expect(service.isElectron()).toBeTruthy();
     });
 
-    it('return false when window does not have process.type', () => {
+    it('return false when window window.process.type does not exist.', () => {
       expect(service.isElectron()).toBeFalsy();
     });
   });
@@ -50,12 +50,12 @@ describe('ElectronService', () => {
       });
     });
 
-    it('set ipcRenderer', () => {
+    it('to be set ipcRenderer.', () => {
       service.register();
       expect(service.ipcRenderer).toBe(electron.ipcRenderer);
     });
 
-    it('set fs', () => {
+    it('to be set fs.', () => {
       service.register();
       expect(service.fs).toBe(fs);
     });
