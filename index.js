@@ -1,6 +1,11 @@
-"use strict";
+'use strict';
 function __export(m) {
   for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(require("./.dist/server"));
+Object.defineProperty(exports, '__esModule', { value: true });
+if (process.env.NODE_ENV === 'development') {
+  require('ts-node').register();
+  __export(require('./server'));
+} else {
+  __export(require('./.dist/server'));
+}
