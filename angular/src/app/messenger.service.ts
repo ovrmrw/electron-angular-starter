@@ -17,10 +17,10 @@ export class MessengerService {
   }
 
   setEventListeners(): void {
-    this.electron.ipcRenderer.on(MESSENGER.REPLY, (_, arg) => this.eventCallback(arg));
+    this.electron.ipcRenderer.on(MESSENGER.REPLY, (_, arg) => this.replyEventCallback(arg));
   }
 
-  eventCallback(arg: MessengerReplyProtocol): void {
+  replyEventCallback(arg: MessengerReplyProtocol): void {
     this.ngZone.run(() => this.reciever$.next(arg));
   }
 

@@ -5,7 +5,8 @@
     "ng": "ng",
     "start": "ng serve --hmr",
     "build": "ng build --prod --output-path ../.dist/front --base-href ./",
-    "test": "ng test",
+    "test": "ng test --watch false",
+    "test:w": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },

@@ -1,8 +1,7 @@
 import { app, BrowserWindow, screen } from 'electron';
 import * as path from 'path';
 import { isDevelopment } from './helpers';
-import './ipc';
-import './rx-messenger';
+import './register';
 
 const prodBrowserWindowConfig = { width: 800, height: 600 };
 

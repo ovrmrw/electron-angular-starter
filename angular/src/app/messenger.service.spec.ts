@@ -5,8 +5,8 @@ import { take } from 'rxjs/operators';
 import { MESSENGER } from '../../../server/const';
 
 const ipcRenderer = {
-  on: function() {},
-  send: function() {}
+  on: () => {},
+  send: () => {}
 };
 
 describe('MessengerService', () => {
@@ -31,14 +31,14 @@ describe('MessengerService', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('#eventCallback', () => {
+  describe('#replyEventCallback', () => {
     it('result$ will get a value from eventCallback.', done => {
       const value = 'hoge';
       service.result$.pipe(take(1)).subscribe(v => {
         expect(v).toBe(value);
         done();
       });
-      service.eventCallback(value);
+      service.replyEventCallback(value);
     });
   });
 

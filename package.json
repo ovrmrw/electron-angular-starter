@@ -8,13 +8,15 @@
     "prebuild": "rimraf .dist",
     "build": "run-p build:front build:server",
     "build:front": "cd angular && npm run build",
-    "build:server": "tsc -p .",
+    "build:server": "tsc -p tsconfig.build.json",
     "serve:front": "cd angular && npm start",
     "run:electron": "wait-on http-get://localhost:4200/ && cross-env NODE_ENV=development electron .",
     "prestart": "rimraf .dist",
     "start": "run-p serve:front run:electron",
     "prepackage": "rimraf dist && npm run build",
-    "package": "electron-builder -mwl"
+    "package": "electron-builder -mwl",
+    "test": "jest --verbose",
+    "test:w": "jest --verbose --watch"
   },
   "build": {
     "appId": "com.ovrmrw.app.electron-angular-starter"
@@ -23,14 +25,17 @@
   "author": "Tomohiro Noguchi <t.ngc.0403@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@types/jest": "^23.3.9",
     "@types/node": "^10.12.2",
     "cross-env": "^5.2.0",
     "electron": "^3.0.7",
     "electron-builder": "^20.31.2",
     "electron-reload": "^1.2.5",
+    "jest": "^23.6.0",
     "npm-run-all": "^4.1.3",
     "prettier": "^1.14.3",
     "rimraf": "^2.6.2",
+    "ts-jest": "^23.10.4",
     "ts-node": "^7.0.1",
     "tslint": "^5.11.0",
     "typescript": "^3.1.6",

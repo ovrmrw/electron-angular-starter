@@ -1,0 +1,6 @@
+{
+  "extends": "./tsconfig",
+  "exclude": [
+    "server/__tests__"
+  ]
+}

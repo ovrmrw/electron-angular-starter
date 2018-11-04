@@ -1,4 +1,5 @@
-import { ExtendedGlobal } from './types';
+import { app, screen, ipcMain } from 'electron';
+import { ExtendedGlobal, ElectronModules } from './types';
 declare var global: ExtendedGlobal;
 
 export function isDevelopment(): boolean {
@@ -19,4 +20,19 @@ export function singleton<T>(name: string, createInstance: () => T): T {
     }
   }
   return global._singletons[name];
+}
+
+export async function electronAsync(): Promise<ElectronModules> {
+  if (typeof global === 'undefined') {
+    return void 0 as any;
+  }
+  if (!global._electron) {
+    await new Promise(resolve => app.once('ready', resolve));
+    global._electron = {
+      app,
+      screen,
+      ipcMain
+    };
+  }
+  return global._electron;
 }

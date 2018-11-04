@@ -1,9 +1,9 @@
-import { ipcMain, WebContents } from 'electron';
+import { WebContents } from 'electron';
 import { Subject } from 'rxjs';
 import { map, delay, tap } from 'rxjs/operators';
 import { MESSENGER } from './const';
 import { MessageBase, ErrorObject } from './types';
-import { singleton } from './helpers';
+import { electronAsync } from './helpers';
 
 export type MessengerSendProtocol = string;
 export type MessengerReplyProtocol = string;
@@ -21,10 +21,13 @@ export class RxMessenger {
   }
 
   setEventListeners(): void {
-    ipcMain.on(MESSENGER.SEND, (event, arg) => this.eventCallback({ event, arg }));
+    electronAsync().then(electron => {
+      const ipcMain = electron.ipcMain;
+      ipcMain.on(MESSENGER.SEND, (event, arg) => this.sendEventCallback({ event, arg }));
+    });
   }
 
-  eventCallback(message: Message): void {
+  sendEventCallback(message: Message): void {
     if (!this.subject$) {
       this.subject$ = this.createSubject();
     }
@@ -57,5 +60,3 @@ export class RxMessenger {
     return subject$;
   }
 }
-
-singleton('rxMessenger', () => new RxMessenger());
