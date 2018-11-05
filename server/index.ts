@@ -72,4 +72,4 @@ app.on('activate', () => {
   }
 });
 
-app.on('ready', () => require('./register'));
+app.on('ready', () => require('./register-singletons'));
