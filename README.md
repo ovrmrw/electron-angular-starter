@@ -2,7 +2,7 @@
 
 The starter kit for Electron apps by TypeScript and Angular.
 
-## Install
+## Setup
 
 ```
 $ npm install

@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "description": "",
   "main": ".dist/server/index.js",
+  "private": true,
   "scripts": {
+    "install:angular": "cd angular && npm install",
+    "postinstall": "npm run install:angular",
     "clean": "rimraf node_modules .dist dist",
     "prebuild": "rimraf .dist",
     "build": "run-p build:front build:server",
