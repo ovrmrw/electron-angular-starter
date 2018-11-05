@@ -1,14 +1,17 @@
+import { EventEmitter } from 'events';
 import { ExtendedGlobal } from '../types';
 declare var global: ExtendedGlobal;
 
-export function mockElectronModules() {
+export function setMockElectronModules(options: { ipcMain?: EventEmitter } = {}) {
   global._electron = {
-    ipcMain: {
-      on: () => {}
-    }
+    ipcMain: options.ipcMain
+      ? options.ipcMain
+      : {
+          on: () => {}
+        }
   } as any;
 }
 
-export function removeElectronModules() {
+export function removeMockElectronModules() {
   delete global._electron;
 }

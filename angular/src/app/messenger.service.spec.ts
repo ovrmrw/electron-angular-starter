@@ -3,11 +3,7 @@ import { MessengerService } from './messenger.service';
 import { ElectronService } from './electron.service';
 import { take } from 'rxjs/operators';
 import { MESSENGER } from '../../../server/const';
-
-const ipcRenderer = {
-  on: () => {},
-  send: () => {}
-};
+import { mockIpcRenderer } from './testing/test-helpers';
 
 describe('MessengerService', () => {
   let service: MessengerService;
@@ -19,7 +15,7 @@ describe('MessengerService', () => {
         MessengerService,
         {
           provide: ElectronService,
-          useValue: { ipcRenderer }
+          useValue: { ipcRenderer: mockIpcRenderer }
         }
       ]
     });
@@ -31,14 +27,14 @@ describe('MessengerService', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('#replyEventCallback', () => {
+  describe('#setEventListeners', () => {
     it('result$ will get a value from eventCallback.', done => {
-      const value = 'hoge';
+      const sourceValue = { value: 'hoge', error: null };
       service.result$.pipe(take(1)).subscribe(v => {
-        expect(v).toBe(value);
+        expect(v).toEqual(sourceValue);
         done();
       });
-      service.replyEventCallback(value);
+      electronService.ipcRenderer.emit(MESSENGER.REPLY, { event: {}, arg: sourceValue });
     });
   });
 

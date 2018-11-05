@@ -1,60 +1,42 @@
-import { WebContents } from 'electron';
-import { Subject } from 'rxjs';
-import { map, delay, tap } from 'rxjs/operators';
+import { Subject, fromEvent, of } from 'rxjs';
+import { map, delay, tap, catchError } from 'rxjs/operators';
 import { MESSENGER } from './const';
-import { MessageBase, ErrorObject } from './types';
+import { MessageBase, ReplyBase } from './types';
 import { electronModules } from './helpers';
+import { IpcMessageEvent } from 'electron';
 
 export type MessengerSendProtocol = string;
-export type MessengerReplyProtocol = string;
+export type MessengerReplyProtocol = ReplyBase<string>;
 
 type Message = MessageBase<MessengerSendProtocol>;
 
 export class RxMessenger {
-  private subject$: Subject<Message> | null;
-  private cachedSender: WebContents;
-  successResult$: Subject<MessengerReplyProtocol> = new Subject();
-  failureResult$: Subject<ErrorObject> = new Subject();
+  result$: Subject<MessengerReplyProtocol> = new Subject();
 
   constructor() {
     this.setEventListeners();
   }
 
   setEventListeners(): void {
-    const ipcMain = electronModules().ipcMain;
-    ipcMain.on(MESSENGER.SEND, (event, arg) => this.sendEventCallback({ event, arg }));
-  }
-
-  sendEventCallback(message: Message): void {
-    if (!this.subject$) {
-      this.subject$ = this.createSubject();
-    }
-    this.subject$.next(message);
-  }
-
-  createSubject(): Subject<Message> {
-    const subject$ = new Subject<Message>();
-    subject$
+    let cachedEvent: IpcMessageEvent;
+    fromEvent<Message>(electronModules().ipcMain, MESSENGER.SEND)
       .pipe(
-        tap(({ event }) => (this.cachedSender = event.sender)),
-        map(o => ({ ...o, value: o.arg + 'pong' })),
-        delay(500)
+        tap(({ event }) => (cachedEvent = event)),
+        map(o => ({ ...o, value: o.arg + 'pong', error: null })),
+        delay(500),
+        catchError(err => {
+          return of({ event: cachedEvent, value: undefined, error: err.message || err });
+        })
       )
       .subscribe({
-        next: ({ event, value }) => {
-          event.sender.send(MESSENGER.REPLY, value);
-          this.successResult$.next(value);
+        next: ({ event, value, error }) => {
+          const reply = { value, error };
+          event.sender.send(MESSENGER.REPLY, reply);
+          this.result$.next(reply);
         },
         error: err => {
-          console.error(err);
-          const value = { error: err };
-          if (this.cachedSender) {
-            this.cachedSender.send(MESSENGER.REPLY, value);
-          }
-          this.failureResult$.next(value);
-          this.subject$ = null;
+          throw err;
         }
       });
-    return subject$;
   }
 }

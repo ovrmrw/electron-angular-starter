@@ -1,10 +1,13 @@
 import { Injectable, NgZone } from '@angular/core';
 import { ElectronService } from './electron.service';
-import { Observable, Subject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable, Subject, fromEvent } from 'rxjs';
+import { tap, map } from 'rxjs/operators';
 
 import { MessengerSendProtocol, MessengerReplyProtocol } from '../../../server/rx-messenger';
+import { MessageBase } from '../../../server/types';
 import { MESSENGER } from '../../../server/const';
+
+type MessageObject = MessageBase<MessengerReplyProtocol>;
 
 @Injectable({
   providedIn: 'root'
@@ -17,11 +20,19 @@ export class MessengerService {
   }
 
   setEventListeners(): void {
-    this.electron.ipcRenderer.on(MESSENGER.REPLY, (_, arg) => this.replyEventCallback(arg));
-  }
-
-  replyEventCallback(arg: MessengerReplyProtocol): void {
-    this.ngZone.run(() => this.reciever$.next(arg));
+    fromEvent<MessageObject>(this.electron.ipcRenderer, MESSENGER.REPLY)
+      .pipe(
+        map(({ event, arg }) => arg),
+        tap(arg => console.log(arg))
+      )
+      .subscribe({
+        next: arg => {
+          this.ngZone.run(() => this.reciever$.next(arg));
+        },
+        error: err => {
+          throw err;
+        }
+      });
   }
 
   send(message: MessengerSendProtocol): void {
@@ -29,6 +40,6 @@ export class MessengerService {
   }
 
   get result$(): Observable<MessengerReplyProtocol> {
-    return this.reciever$.pipe(tap(console.log));
+    return this.reciever$;
   }
 }
