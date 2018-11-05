@@ -8,10 +8,7 @@ export interface ElectronModules {
 
 export type ExtendedGlobal = NodeJS.Global & { _singletons: Record<string, any>; _electron: ElectronModules };
 
-export interface MessageBase<T> {
-  event: IpcMessageEvent;
-  arg: T;
-}
+export type MessageTupleBase<T> = [IpcMessageEvent, T];
 
 export interface ReplyBase<T> {
   value: T | undefined;

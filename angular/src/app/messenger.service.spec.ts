@@ -34,16 +34,16 @@ describe('MessengerService', () => {
         expect(v).toEqual(sourceValue);
         done();
       });
-      electronService.ipcRenderer.emit(MESSENGER.REPLY, { event: {}, arg: sourceValue });
+      electronService.ipcRenderer.emit(MESSENGER.REPLY, [null, sourceValue]);
     });
   });
 
   describe('#send', () => {
     it('ipcRenderer.send has also been called.', () => {
-      const value = 'hoge';
+      const sourceValue = 'hoge';
       const spy = spyOn(electronService.ipcRenderer, 'send').and.returnValue(void 0);
-      service.send(value);
-      expect(spy).toHaveBeenCalledWith(MESSENGER.SEND, value);
+      service.send(sourceValue);
+      expect(spy).toHaveBeenCalledWith(MESSENGER.SEND, sourceValue);
     });
   });
 });

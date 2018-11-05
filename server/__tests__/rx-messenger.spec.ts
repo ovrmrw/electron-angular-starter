@@ -37,7 +37,7 @@ describe('RxMessenger', () => {
         expect(spy).toHaveBeenCalledWith(MESSENGER.REPLY, expected);
         done();
       });
-      mockIpcMain.emit(MESSENGER.SEND, { event: mockEvent, arg: sourceValue });
+      mockIpcMain.emit(MESSENGER.SEND, [mockEvent, sourceValue]);
     });
   });
 });

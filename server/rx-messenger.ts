@@ -1,14 +1,16 @@
+// Types
+import { IpcMessageEvent } from 'electron';
+import { MessageTupleBase, ReplyBase } from './types';
+// Modules
 import { Subject, fromEvent, of } from 'rxjs';
 import { map, delay, tap, catchError } from 'rxjs/operators';
 import { MESSENGER } from './const';
-import { MessageBase, ReplyBase } from './types';
 import { electronModules } from './helpers';
-import { IpcMessageEvent } from 'electron';
 
 export type MessengerSendProtocol = string;
 export type MessengerReplyProtocol = ReplyBase<string>;
 
-type Message = MessageBase<MessengerSendProtocol>;
+type MessageTuple = MessageTupleBase<MessengerSendProtocol>;
 
 export class RxMessenger {
   result$: Subject<MessengerReplyProtocol> = new Subject();
@@ -19,8 +21,9 @@ export class RxMessenger {
 
   setEventListeners(): void {
     let cachedEvent: IpcMessageEvent;
-    fromEvent<Message>(electronModules().ipcMain, MESSENGER.SEND)
+    fromEvent<MessageTuple>(electronModules().ipcMain, MESSENGER.SEND)
       .pipe(
+        map(([event, arg]) => ({ event, arg })),
         tap(({ event }) => (cachedEvent = event)),
         map(o => ({ ...o, value: o.arg + 'pong', error: null })),
         delay(500),
