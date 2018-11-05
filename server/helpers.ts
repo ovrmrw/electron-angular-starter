@@ -28,7 +28,7 @@ export function electronModules(): ElectronModules {
   }
   if (!global._electron) {
     // Must be called after ready event of "app" module.
-    if (!app.isReady) {
+    if (!app.isReady()) {
       throw new Error('"app" module is not ready!');
     }
     global._electron = {
