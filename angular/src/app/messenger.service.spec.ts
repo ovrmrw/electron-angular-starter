@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { MessengerService } from './messenger.service';
+import { MessengerService, reply$ } from './messenger.service';
 import { ElectronService } from './electron.service';
 import { take } from 'rxjs/operators';
 import { MESSENGER } from '../../../server/const';
@@ -45,5 +45,24 @@ describe('MessengerService', () => {
       service.send(sourceValue);
       expect(spy).toHaveBeenCalledWith(MESSENGER.SEND, sourceValue);
     });
+  });
+});
+
+describe('reply$ function', () => {
+  it('should get every emitted value through the stream.', done => {
+    const results: any[] = [];
+    const sourceValue1 = { value: 'hoge1', error: null };
+    const sourceValue2 = { value: 'hoge2', error: null };
+    reply$(mockIpcRenderer as any, MESSENGER.REPLY)
+      .pipe(take(2))
+      .subscribe({
+        next: v => results.push(v),
+        complete: () => {
+          expect(results).toEqual([sourceValue1, sourceValue2]);
+          done();
+        }
+      });
+    mockIpcRenderer.emit(MESSENGER.REPLY, [null, sourceValue1]);
+    mockIpcRenderer.emit(MESSENGER.REPLY, [null, sourceValue2]);
   });
 });
