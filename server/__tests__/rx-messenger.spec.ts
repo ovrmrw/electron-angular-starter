@@ -52,8 +52,8 @@ describe('pong$ function', () => {
         next: v => results.push(v),
         complete: () => {
           expect(results).toEqual([
-            { event: mockEvent, arg: sourceValue1, value: sourceValue1 + 'pong', error: null },
-            { event: mockEvent, arg: sourceValue2, value: sourceValue2 + 'pong', error: null }
+            { event: mockEvent, value: sourceValue1 + 'pong', error: null },
+            { event: mockEvent, value: sourceValue2 + 'pong', error: null }
           ]);
           done();
         }

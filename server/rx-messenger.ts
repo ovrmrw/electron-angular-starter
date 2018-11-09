@@ -41,7 +41,7 @@ export function pong$(
   return fromEvent<[IpcMessageEvent, string]>(target, eventName).pipe(
     map(([event, arg]) => ({ event, arg })),
     tap(o => (cached = o)),
-    map(o => ({ ...o, value: o.arg + 'pong', error: null })),
+    map(o => ({ event: o.event, value: o.arg + 'pong', error: null })),
     delay(options.delayTime),
     catchError(err => {
       return of({ ...cached, value: undefined, error: err.message || err });
@@ -51,14 +51,12 @@ export function pong$(
 
 interface SuccessPongResult {
   event: IpcMessageEvent;
-  arg: string;
   value: string;
   error: null;
 }
 
 interface FailedPongResult {
   event: IpcMessageEvent;
-  arg: string;
   value: undefined;
   error: string;
 }
