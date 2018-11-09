@@ -19,7 +19,9 @@
     "prepackage": "rimraf dist && npm run build",
     "package": "electron-builder -mwl",
     "test": "jest --verbose",
-    "test:w": "jest --verbose --watch"
+    "test:w": "jest --verbose --watch",
+    "test:angular": "cd angular && npm test",
+    "test:all": "npm test && npm run test:angular"
   },
   "build": {
     "appId": "com.ovrmrw.app.electron-angular-starter"
@@ -45,6 +47,8 @@
     "wait-on": "^3.1.0"
   },
   "dependencies": {
+    "inversify": "^5.0.1",
+    "reflect-metadata": "^0.1.12",
     "rxjs": "^6.3.3"
   }
 }

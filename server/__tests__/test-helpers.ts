@@ -1,17 +1,14 @@
+import { Container } from 'inversify';
 import { EventEmitter } from 'events';
-import { ExtendedGlobal } from '../types';
-declare var global: ExtendedGlobal;
+import { ELECTRON } from '../const';
 
-export function setMockElectronModules(options: { ipcMain?: EventEmitter } = {}) {
-  global._electron = {
-    ipcMain: options.ipcMain
-      ? options.ipcMain
-      : {
-          on: () => {}
-        }
-  } as any;
-}
-
-export function removeMockElectronModules() {
-  delete global._electron;
+export function getTestContainer(options: { ipcMain?: EventEmitter } = {}) {
+  const ipcMain = options.ipcMain
+    ? options.ipcMain
+    : {
+        on: () => {}
+      };
+  const testContainer = new Container({ defaultScope: 'Singleton' });
+  testContainer.bind(ELECTRON.IPC_MAIN).toConstantValue(ipcMain);
+  return testContainer;
 }

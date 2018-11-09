@@ -1,25 +1,25 @@
 // Types
 import { IpcMessageEvent, IpcMain } from 'electron';
-import { MessageTupleBase, ReplyBase } from './types';
+import { ReplyBase } from './types';
 // Modules
+import { injectable, inject } from 'inversify';
 import { Subject, fromEvent, of, Observable } from 'rxjs';
 import { map, delay, tap, catchError } from 'rxjs/operators';
-import { MESSENGER } from './const';
-import { electronModules } from './helpers';
+import { MESSENGER, ELECTRON } from './const';
 
 export type MessengerSendProtocol = string;
 export type MessengerReplyProtocol = ReplyBase<string>;
 
+@injectable()
 export class RxMessenger {
   result$: Subject<MessengerReplyProtocol> = new Subject();
 
-  constructor() {
+  constructor(@inject(ELECTRON.IPC_MAIN) private ipcMain: IpcMain) {
     this.setEventListeners();
   }
 
   setEventListeners(): void {
-    const { ipcMain } = electronModules();
-    pong$(ipcMain, MESSENGER.SEND, { delayTime: 500 }).subscribe({
+    pong$(this.ipcMain, MESSENGER.SEND, { delayTime: 500 }).subscribe({
       next: ({ event, value, error }) => {
         const reply = { value, error };
         event.sender.send(MESSENGER.REPLY, reply);

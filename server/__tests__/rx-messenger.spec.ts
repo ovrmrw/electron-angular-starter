@@ -1,7 +1,7 @@
 import { RxMessenger, pong$ } from '../rx-messenger';
 import { take } from 'rxjs/operators';
 import { MESSENGER } from '../const';
-import { setMockElectronModules, removeMockElectronModules } from './test-helpers';
+import { getTestContainer } from './test-helpers';
 import { EventEmitter } from 'events';
 
 const mockIpcMain = new EventEmitter();
@@ -15,12 +15,9 @@ describe('RxMessenger', () => {
   let rxMessenger: RxMessenger;
 
   beforeEach(() => {
-    setMockElectronModules({ ipcMain: mockIpcMain });
-    rxMessenger = new RxMessenger();
-  });
-
-  afterEach(() => {
-    removeMockElectronModules();
+    const container = getTestContainer({ ipcMain: mockIpcMain });
+    container.bind(RxMessenger).toSelf();
+    rxMessenger = container.get(RxMessenger);
   });
 
   it('should be created.', () => {
